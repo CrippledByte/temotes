@@ -14,6 +14,7 @@ type sevenTvEmote struct {
 	ID   string            `json:"id"`
 	Code string            `json:"name"`
 	Urls []sevenTvEmoteUrl `json:"urls"`
+	VisibilitySimple []string `json:"visibility_simple"`
 }
 
 type sevenTvEmoteUrl = [2]string
@@ -74,10 +75,24 @@ func (t SevenTvFetcher) parseEmoteUrls(emote sevenTvEmote) []temotes.EmoteUrl {
 	return urls
 }
 
+func (t SevenTvFetcher) parseZeroWidth(emote sevenTvEmote) bool {
+	var zerowidth bool = false
+
+	// check if "ZERO_WIDTH" is in the visibility_simple array
+	for _, visibility := range emote.VisibilitySimple {
+		if visibility == "ZERO_WIDTH" {
+			zerowidth = true;
+		}
+	}
+
+	return zerowidth
+}
+
 func (t SevenTvFetcher) parseEmote(emote sevenTvEmote) temotes.Emote {
 	return temotes.Emote{
 		Provider: temotes.Provider7tv,
 		Code:     emote.Code,
 		Urls:     t.parseEmoteUrls(emote),
+		ZeroWidth: t.parseZeroWidth(emote),
 	}
 }

@@ -27,4 +27,5 @@ type Emote struct {
 	Provider EmoteProvider `json:"provider"`
 	Code     string        `json:"code"`
 	Urls     []EmoteUrl    `json:"urls"`
+	ZeroWidth bool         `json:"zero_width"`
 }
