@@ -80,10 +80,24 @@ func (t BttvFetcher) parseEmoteUrls(emote bttvEmote) []temotes.EmoteUrl {
 	}
 }
 
+func (t BttvFetcher) parseZeroWidth(emote bttvEmote) bool {
+	// Check if emote is zero width.
+	// https://github.com/Chatterino/chatterino2/blob/1043f9f8037ed53fbaf1812f289a4e3db152e140/src/providers/twitch/TwitchMessageBuilder.cpp#L51
+	// https://github.com/flex3r/DankChat/blob/9aa32300df8c71ef84758d0d8a9196616fc8a526/app/src/main/kotlin/com/flxrs/dankchat/data/repo/EmoteRepository.kt#L612
+    switch emote.Code {
+		case
+		"SoSnowy", "IceCold", "SantaHat", "TopHat",
+		"ReinDeer", "CandyCane", "cvMask", "cvHazmat":
+		return true
+	}
+	return false
+}
+
 func (t BttvFetcher) parseEmote(emote bttvEmote) temotes.Emote {
 	return temotes.Emote{
 		Provider: temotes.ProviderBttv,
 		Code:     emote.Code,
 		Urls:     t.parseEmoteUrls(emote),
+		ZeroWidth: t.parseZeroWidth(emote),
 	}
 }
